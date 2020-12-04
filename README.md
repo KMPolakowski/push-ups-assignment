@@ -1,4 +1,8 @@
-Laravel 8 project
+<h1> Push Ups app <h1>
+<h2> Laravel 8 project <h2>
+
+### Requirements
+ - requires a db to be created and confiured in the .env file
 
 ### How to run
 
