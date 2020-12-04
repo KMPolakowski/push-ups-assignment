@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PushUpsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('users/{userId}/push_ups', [PushUpsController::class, 'add']);
+Route::get('users/{userId}/push_ups', [PushUpsController::class, 'getUsersPushUps']);
+
+
