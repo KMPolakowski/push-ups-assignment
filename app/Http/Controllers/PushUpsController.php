@@ -48,7 +48,9 @@ class PushUpsController extends Controller
             <<<SQL
 SELECT
 	`u0`.`id` AS `user_id`,
-    SUM(`p0`.`points`) AS `sum_points`
+    SUM(`p0`.`points`) AS `sum_points`,
+    `u0`.`name`,
+    `u0`.`email`
 FROM
     users AS `u0`
         INNER JOIN

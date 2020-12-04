@@ -20,8 +20,6 @@ class PushUpsTest extends TestCase
     {
         $user = User::factory(1)->createOne();
 
-        // dd($user);
-
         $response = $this->post(
             '/api/users/' . $user->id . '/push_ups',
             [
@@ -49,7 +47,7 @@ class PushUpsTest extends TestCase
         $data = json_decode($response->getContent());
 
         foreach ($pushUps as $key => $pushUp) {
-            
+
             $pushUpFromResp = $data[$key];
 
             $this->assertEquals($pushUp->id, $pushUpFromResp->id);
@@ -61,7 +59,69 @@ class PushUpsTest extends TestCase
         }
     }
 
-    public function testLeaderboard() {
-        
+
+    public function testLeaderboard()
+    {
+        $data = $this->fakeLeaderboardProvider();
+
+        foreach ($data as $userData) {  
+            $user = User::factory()->create();
+
+            foreach ($userData['points'] as $points) {
+                PushUp::factory()->createOne(['points' => $points, 'user_id' => $user->id]);
+            }
+        }
+
+        $response = $this->get(
+            '/api/leaderboard',
+        );
+
+        $response->assertStatus(200);
+
+        $respData = json_decode($response->getContent());
+
+            foreach ($data as $key => $userData) {
+                $rankingFromResp = $respData[$key];
+
+                $this->assertEquals(
+                    [
+                        "ranking" => $userData['ranking'],
+                        "sum" => $userData['sum']
+                    ],
+                    [
+                        "ranking" => $rankingFromResp->ranking,
+                        "sum" => $rankingFromResp->sum_points
+                    ]
+                );
+        }
+    }
+
+    // fake provider, no time for setting up factories to work with data provider
+    public function fakeLeaderboardProvider(): array
+    {
+        return [
+            [
+                "ranking" => 1,
+                "points" => [1000, 1000, 100],
+                "sum" => 2100,
+                "email" => "1@.com"
+            ],
+            [
+                "ranking" => 2,
+                "points" => [1000, 1000, 10],
+                "sum" => 2010,
+                "email" => "2@.com"
+            ], [
+                "ranking" => 3,
+                "points" => [1000, 1000, 1],
+                "sum" => 2001,
+                "email" => "3@.com"
+            ], [
+                "ranking" => 4,
+                "points" => [12, 23, 45, 1000],
+                "sum" => 1080,
+                "email" => "4@.com"
+            ]
+        ];
     }
 }
