@@ -21,5 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('users/{userId}/push_ups', [PushUpsController::class, 'add']);
 Route::get('users/{userId}/push_ups', [PushUpsController::class, 'getUsersPushUps']);
+Route::get('leaderboard', [PushUpsController::class, 'getLeaderBoard']);
+
 
 
