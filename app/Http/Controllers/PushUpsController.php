@@ -7,6 +7,7 @@ use App\Http\Requests\AddPushUp;
 use App\Models\PushUp;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationData;
 
 class PushUpsController extends Controller
@@ -39,5 +40,32 @@ class PushUpsController extends Controller
         $pushUps = PushUp::where('user_id', $user->id)->get();
 
         return $pushUps;
+    }
+
+    public function getLeaderBoard()
+    {
+        $query =
+            <<<SQL
+SELECT
+	`u0`.`id` AS `user_id`,
+    SUM(`p0`.`points`) AS `sum_points`
+FROM
+    users AS `u0`
+        INNER JOIN
+    push_ups AS `p0` ON `u0`.`id` = `p0`.`user_id`
+WHERE
+	1=1
+GROUP BY `u0`.`id`
+ORDER BY `sum_points` DESC
+LIMIT 10;
+SQL;
+
+        $leaders = DB::select($query);
+
+        foreach ($leaders as $idx => $leader) {
+            $leader->ranking = $idx + 1;
+        }
+
+        return $leaders;
     }
 }
