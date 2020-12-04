@@ -1,3 +1,5 @@
+Laravel 8 project
+
 ### How to run
 
  To migrate run `php artisan migrate`
